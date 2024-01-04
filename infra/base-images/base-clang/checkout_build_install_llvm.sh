@@ -50,7 +50,7 @@ LLVM_DEP_PACKAGES="build-essential make ninja-build git python3 python3-distutil
 apt-get update && apt-get install -y $LLVM_DEP_PACKAGES --no-install-recommends
 
 # For manual bumping.
-OUR_LLVM_REVISION=llvmorg-15-init-1464-gbf7f8d6f
+OUR_LLVM_REVISION=7822a3307371639884f2ac4f4b5ceacf1ae144b2
 
 mkdir $SRC/chromium_tools
 cd $SRC/chromium_tools
@@ -89,7 +89,7 @@ function clone_with_retries {
   set -e
   return $CHECKOUT_RETURN_CODE
 }
-clone_with_retries https://github.com/llvm/llvm-project.git $LLVM_SRC
+clone_with_retries https://github.com/jhkim19940830/llvm-project.git $LLVM_SRC
 
 PROJECTS_TO_BUILD="libcxx;libcxxabi;compiler-rt;clang;lld"
 function cmake_llvm {
