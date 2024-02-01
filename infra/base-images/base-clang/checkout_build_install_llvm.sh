@@ -49,8 +49,7 @@ LLVM_DEP_PACKAGES="build-essential make ninja-build git python3 python3-distutil
 
 apt-get update && apt-get install -y $LLVM_DEP_PACKAGES --no-install-recommends
 
-# For manual bumping.
-OUR_LLVM_REVISION=7a673724ebaf85664ea0d56f17f06da9dd309772
+# For manual bumping
 
 mkdir $SRC/chromium_tools
 cd $SRC/chromium_tools
@@ -64,7 +63,6 @@ git checkout 946a41a51f44207941b3729a0733dfc1e236644e
 # DO NOT CHANGE THIS UNTIL https://github.com/google/oss-fuzz/issues/7273 is
 # RESOLVED.
 FORCE_OUR_REVISION=1
-LLVM_REVISION=$(grep -Po "CLANG_REVISION = '\K([^']+)" scripts/update.py)
 
 LLVM_SRC=$SRC/llvm-project
 # Checkout
@@ -106,19 +104,8 @@ function cmake_llvm {
       $LLVM_SRC/llvm
 }
 
-set +e
-git -C $LLVM_SRC merge-base --is-ancestor $OUR_LLVM_REVISION $LLVM_REVISION
-IS_OUR_REVISION_ANCESTOR_RETCODE=$?
-set -e
-
-# Use our revision if specified by FORCE_OUR_REVISION or if our revision is a
-# later revision than Chrome's (i.e. not an ancestor of Chrome's).
-if [ $IS_OUR_REVISION_ANCESTOR_RETCODE -ne 0 ] || [ $FORCE_OUR_REVISION -eq 1 ] ; then
-  LLVM_REVISION=$OUR_LLVM_REVISION
-fi
-
-git -C $LLVM_SRC checkout $LLVM_REVISION
-echo "Using LLVM revision: $LLVM_REVISION"
+LLVM_BRANCH=no_coverage
+git -C $LLVM_SRC checkout -t origin/$LLVM_BRANCH
 
 # For fuzz introspector.
 echo "Applying introspector changes"
